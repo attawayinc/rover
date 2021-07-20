@@ -8,10 +8,9 @@ export landingzone_branch=${landingzone_branch:="master"}
 
 current_path=$(pwd)
 
-
 function display_clone_instructions {
 
-    while (( "$#" )); do
+    while (("$#")); do
         case "${1}" in
             --intro)
                 echo
@@ -40,7 +39,7 @@ function display_clone_instructions {
                 ;;
             --clone-folder)
                 echo "--clone-folder specify the folder to extract from the original project"
-                echo 
+                echo
                 echo "      Example: --clone-folder /landingzones/landingzone_caf_foundations will only extract the caf foundations landing zone"
                 echo
                 shift 1
@@ -54,6 +53,14 @@ function display_clone_instructions {
                 echo "      To reproduce a nice folder structure in the rover it it possible to set the --clone-folder-strip to 2 to remove [project]-[branch]/landingzones and only retrieve the third level folder"
                 echo ""
                 echo "      Default to 2 when using azure/caf-terraform-landingzones and 1 for all other git projects"
+                echo
+                shift 1
+                ;;
+            --clone-project-name)
+                echo "--clone-project-name specify the GitHub repo to download from, default is Azure/caf-terraform-landingzones"
+                echo
+                echo "      Example: --clone-project-name Azure/caf-terraform-landingzones-starter --clone-branch starter will download the starter branch of the Azure/caf-terraform-landingzones-starter repo"
+                echo "      Note: the default --cone-branch is master and this is not available in the example repo above so the starter branch is specified."
                 echo
                 shift 1
                 ;;
@@ -75,6 +82,13 @@ function display_clone_instructions {
     done
 }
 
+function set_clone_exports {
+    export clone_destination=$1
+    export clone_folder=$2
+    export clone_folder_strip=$3
+    export clone_project_name=$4
+    export landingzone_branch=$5
+}
 
 function clone_repository {
     echo "@calling clone_repository"
@@ -103,51 +117,58 @@ function clone_repository {
 function process_clone_parameter {
     echo "@calling process_clone_parameter with $@"
 
-
     case "${1}" in
-        --clone)
-            if [ $# -eq 1 ]; then
-                display_clone_instructions ${1}
-                exit 21
-            else
-                export caf_command="clone"
-                export landingzone_branch=${landingzone_branch:="master"}
-                export clone_project_name=${2}
-                export clone_folder_strip=1
-            fi
-            ;;
-        --clone-branch)
-            echo $#
-            if [ $# -eq 1 ]; then
-                display_clone_instructions ${1}
-                exit 22
-            else
-                export landingzone_branch=${2}
-            fi
-            ;;
-        --clone-destination)
-            if [ $# -eq 1 ]; then
-                display_clone_instructions ${1}
-                exit 23
-            else
-                export clone_destination=${2}
-            fi
-            ;;
-        --clone-folder)
-            if [ $# -eq 1 ]; then
-                display_clone_instructions ${1}
-                exit 24
-            else
-                export clone_folder=${2}
-            fi
-            ;;
-        --clone-folder-strip)
-            if [ $# -eq 1 ]; then
-                display_clone_instructions ${1}
-                exit 24
-            else
-                export clone_folder_strip=${2}
-            fi
-            ;;
+    --clone)
+        if [ $# -eq 1 ]; then
+            display_clone_instructions ${1}
+            exit 21
+        else
+            export caf_command="clone"
+            export landingzone_branch=${landingzone_branch:="master"}
+            export clone_project_name=${2}
+            export clone_folder_strip=1
+        fi
+        ;;
+    --clone-branch)
+        echo $#
+        if [ $# -eq 1 ]; then
+            display_clone_instructions ${1}
+            exit 22
+        else
+            export landingzone_branch=${2}
+        fi
+        ;;
+    --clone-destination)
+        if [ $# -eq 1 ]; then
+            display_clone_instructions ${1}
+            exit 23
+        else
+            export clone_destination=${2}
+        fi
+        ;;
+    --clone-folder)
+        if [ $# -eq 1 ]; then
+            display_clone_instructions ${1}
+            exit 24
+        else
+            export clone_folder=${2}
+        fi
+        ;;
+    --clone-folder-strip)
+        if [ $# -eq 1 ]; then
+            display_clone_instructions ${1}
+            exit 24
+        else
+            export clone_folder_strip=${2}
+        fi
+        ;;
+    --clone-project-name)
+        if [ $# -eq 1 ]; then
+            display_clone_instructions ${1}
+            exit 24
+        else
+            export clone_project_name=${2}
+        fi
+        ;;
     esac
 }
